@@ -1,0 +1,48 @@
+# kaique-lopes
+arduino
+int pinoled = 13;                
+int entradasensor = 2;               
+int estadodopino = BAIXO;             
+int val = 0;                    
+int som = 10;           
+
+void setup() {
+  pinMode(pinoled, SAIDA);      
+  pinMode(entradasensor, ENTRADA);     
+  pinMode(som, SAIDA);
+  Serial.begin(9600);
+}
+
+void loop(){
+  val = digitalRead(entradasensor);  
+  if (val == ALTO) {            
+    digitalWrite(pinoled, BAIXO);  
+    playTone(300, 160);
+    delay(150);
+
+    
+    if (estadodopino == BAIXO) {
+      Serial.println("Movimento Detectado!");
+      estadodopino = ALTO;
+    }
+  } else {
+      digitalWrite(pinoled, ALTO);
+      playTone(0, 0);
+      delay(300);    
+      if (estadodopino == ALTO){
+      Serial.println("Fim do Movimento");
+    }
+  }
+}
+void playTone(long duration, int freq) {
+    duration *= 1000;
+    int period = (1.0 / freq) * 1000000;
+    long elapsed_time = 0;
+    while (elapsed_time < duration) {
+        digitalWrite(som,ALTO);
+        delayMicroseconds(period / 2);
+        digitalWrite(som, BAIXO);
+        delayMicroseconds(period / 2);
+        elapsed_time += (period);
+    }
+}
